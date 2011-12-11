@@ -15,6 +15,14 @@
   (is (= true (file? "project.clj")))
   (is (= false (file? "./src"))))
 
+(deftest list-file
+  (is (seq? (list-files ".")))
+  (is (= nil (list-files "./tmp/does/not/exist"))))
+
+(deftest has-children
+  (is (= true (children? "./src")))
+  (is (= false (children? "./README"))))
+
 (deftest is-same-file?
   (is (= true (same-file? "project.clj" "project.clj")))
   (is (= false (same-file? "project.clj" "README"))))
@@ -37,12 +45,16 @@
   (is (= true (writable? "project.clj")))
   (is (= false (writable? "i-dont-exist"))))
 
-(comment deftest mkdir-and-rmdir
+(testing "Make and delete direcoties"
   (is (= true (mkdir "./tmp/test/1/2")))
   (is (= true (exists? "./tmp/test/1/2")))
   (is (= true (rm "./tmp/test/1/2")))
   (is (= false (exists? "./tmp/test/1/2")))
-  (is (= true (rm "./tmp")))
+  ;(is (= true (rm "./tmp/test/1")))
+  ;(is (= false (exists? "./tmp/test/1")))
+  ;(is (= true (rm "./tmp/test")))
+  ;(is (= false (exists? "./tmp/test")))
+  (is (= true (rm-r "./tmp")))
   (is (= false (exists? "./tmp"))))
 
 (deftest temp-file

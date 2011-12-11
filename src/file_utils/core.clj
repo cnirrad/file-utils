@@ -2,7 +2,8 @@
   (:import java.io.File
            (java.security NoSuchAlgorithmException MessageDigest))
   (:use [clojure.java.io])
-  (:require [clj-time.coerce :as dt]))
+  (:require [clj-time.coerce :as dt]
+            [clojure.walk :as walk]))
   
 (def file-sep (System/getProperty "file.separator"))
 
@@ -33,6 +34,15 @@
   "Returns true if the path is a file."
   [path]
   (.isFile (as-file path)))
+
+(defn list-files
+  [dir]
+  (seq (.listFiles (as-file dir))))
+
+(defn children?
+  "Returns true if dir has children."
+  [dir]
+  (or (> (count (list-files dir)) 0)))
 
 (defn same-file?
   "Determines if f1 and f2 are the same file by
@@ -71,11 +81,6 @@
    create any parent directories as required."
   [path]
   (.mkdirs (as-file path)))
-
-(defn rm
-  "Deletes the file or directory."
-  [path]
-  (.delete (as-file path)))
 
 (defn create-temp
   "Creates a temporary file."
@@ -120,4 +125,20 @@
     (if recursive
       (filter filter-fn (file-seq (as-file start-path)))  
       (filter filter-fn (.listFiles (as-file start-path))))))
+
+(defn rm
+  "Deletes the file or directory."
+  [path & recursively]
+  (if (or recursively false)
+    (walk/prewalk #(println (str "rm " %)) (file-seq (as-file path)))
+    (.delete (as-file path))))
+
+(defn rm-r
+  "Recursively removes a directory and all of its contents."
+  [path]
+  (let [f (as-file path)]
+    (if (dir? f)
+      (doseq [child (.listFiles f)]
+        (rm-r child))
+      (rm f))))
 
