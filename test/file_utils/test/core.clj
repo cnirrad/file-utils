@@ -57,7 +57,25 @@
   (is (= "txt" (extension "/home/joe/Documents/test.txt")))
   (is (= nil (extension "/etc/passwd"))))
 
-(deftest test-find
-  (let [files (find-file "." :file-pattern #".*\.clj$" :recursive true)]
-    (is (> (count files) 0))
-    (is (= () (filter (fn [f] (not= "clj" (extension f))) files)))))
+
+(testing "File search"
+   (testing "with regex"
+     (testing "recursively"
+        (let [files (find-file "." :file-pattern #".*\.clj" :recursive true)]
+           (is (> (count files) 0))
+           (is (= () (filter (fn [f] (not= "clj" (extension f))) files)))))          
+     (testing "not recursively"
+        (let [files (find-file "." :file-pattern #".*\.clj" :recursive false)]
+           ; only the project.clj is expected. 
+           (is (= (count files) 1))    
+           (is (= "project.clj" (name (first files)))))))
+  (testing "with string"
+    (testing "recursively"
+      (let [files (find-file "." :file-pattern "core.clj" :recursive true)]
+        (is (= (count files) 2)
+        (is (= (name (first files)) "core.clj")))))
+    (testing "not recusively"
+      (let [files (find-file "." :file-pattern "core.clj" :recursive false)]
+        (is (= (count files) 0))))))
+
+

@@ -100,15 +100,21 @@
       (.substring filename (+ idx 1))  
       nil)))
 
-
-(defn- make-filter-fn [pattern]
-  (fn [f]
-    (re-matches pattern (name f))))
+(defn make-filter-fn [pattern]
+  (if (= nil pattern)
+    (fn [_] true)
+    (condp instance? pattern
+      String (fn [f] (.equalsIgnoreCase pattern (name f)))
+      java.util.regex.Pattern  (fn [f] (re-matches pattern (name f))))))
 
 (defn find-file
   "Returns a lazy sequence of all files that match the 
-  file-pattern, if given. If recursizve is true, this 
-  will search the subdirectories as well."
+  file-pattern, if given. If recursive is true, this 
+  will search the subdirectories as well.
+  
+  file-pattern may be a regular expression or a string.
+  When it is a string, it will only match exact file
+  names ignoring case.  "
   [start-path & {:keys [file-pattern recursive]}]
   (let [filter-fn (make-filter-fn file-pattern)]
     (if recursive
