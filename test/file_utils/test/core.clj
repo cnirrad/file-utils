@@ -63,7 +63,7 @@
     (is (= true (rm tmp)))))
 
 (deftest test-name
-  (is (= "test.txt" (name "/home/joe/Documents/test.txt"))))
+  (is (= "test.txt" (filename "/home/joe/Documents/test.txt"))))
 
 (deftest file-extension
   (is (= "txt" (extension "/home/joe/Documents/test.txt")))
@@ -80,12 +80,12 @@
         (let [files (find-file "." :file-pattern #".*\.clj" :recursive false)]
            ; only the project.clj is expected. 
            (is (= (count files) 1))    
-           (is (= "project.clj" (name (first files)))))))
+           (is (= "project.clj" (filename (first files)))))))
   (testing "with string"
     (testing "recursively"
       (let [files (find-file "." :file-pattern "core.clj" :recursive true)]
         (is (= (count files) 2)
-        (is (= (name (first files)) "core.clj")))))
+        (is (= (filename (first files)) "core.clj")))))
     (testing "not recusively"
       (let [files (find-file "." :file-pattern "core.clj" :recursive false)]
         (is (= (count files) 0))))))

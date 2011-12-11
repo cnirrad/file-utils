@@ -91,7 +91,7 @@
   [file]
   (.getPath file))
 
-(defn name
+(defn filename
   "Returns the name of the file or directory of the path."
   [path]
   (.getName (as-file path)))
@@ -99,7 +99,7 @@
 (defn extension
   "Returns the file extension."
   [path]
-  (let [filename (name path)
+  (let [filename (filename path)
         idx (.lastIndexOf (.getName (as-file path)) ".")]
     (if (> idx 0)
       (.substring filename (+ idx 1))  
@@ -109,8 +109,8 @@
   (if (= nil pattern)
     (fn [_] true)
     (condp instance? pattern
-      String (fn [f] (.equalsIgnoreCase pattern (name f)))
-      java.util.regex.Pattern  (fn [f] (re-matches pattern (name f))))))
+      String (fn [f] (.equalsIgnoreCase pattern (filename f)))
+      java.util.regex.Pattern  (fn [f] (re-matches pattern (filename f))))))
 
 (defn find-file
   "Returns a lazy sequence of all files that match the 
