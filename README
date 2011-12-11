@@ -1,13 +1,20 @@
 # file-utils
 
-FIXME: write description
+File utilitiy funcitons for Clojure.
 
 ## Usage
 
-FIXME: write
+user=> (use 'file-utils.core)
+nil
+user=> (exists? "./foo")
+false
+user=> (mkdir "./foo")
+true
+user=> (rm "./foo")
+true
 
 ## License
 
-Copyright (C) 2011 FIXME
+Copyright (C) 2011 Darrin Collins
 
 Distributed under the Eclipse Public License, the same as Clojure.
