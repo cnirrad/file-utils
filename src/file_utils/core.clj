@@ -88,7 +88,8 @@
   (java.io.File/createTempFile "clj", "tmp"))
 
 (defn path
-  [file]
+  "Returns the path of a file."
+  [^File file]
   (.getPath file))
 
 (defn filename
@@ -105,7 +106,7 @@
       (.substring filename (+ idx 1))  
       nil)))
 
-(defn make-filter-fn [pattern]
+(defn- make-filter-fn [pattern]
   (if (= nil pattern)
     (fn [_] true)
     (condp instance? pattern
@@ -138,7 +139,9 @@
   [path]
   (let [f (as-file path)]
     (if (dir? f)
-      (doseq [child (.listFiles f)]
-        (rm-r child))
+      (do 
+        (doseq [child (list-files f)]
+          (rm-r child))
+        (rm f))
       (rm f))))
 
