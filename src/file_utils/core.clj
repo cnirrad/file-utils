@@ -111,18 +111,20 @@
     (fn [_] true)
     (condp instance? pattern
       String (fn [f] (.equalsIgnoreCase pattern (filename f)))
-      java.util.regex.Pattern  (fn [f] (re-matches pattern (filename f))))))
+      java.util.regex.Pattern  (fn [f] (re-matches pattern (filename f)))
+      clojure.lang.IFn pattern)))
 
 (defn find-file
   "Returns a lazy sequence of all files that match the 
   file-pattern, if given. If recursive is true, this 
   will search the subdirectories as well.
   
-  file-pattern may be a regular expression or a string.
-  When it is a string, it will only match exact file
-  names ignoring case.  "
-  [start-path & {:keys [file-pattern recursive]}]
-  (let [filter-fn (make-filter-fn file-pattern)]
+  file-filter may be a regular expression, a string or
+  a funciton that takes a file as a parameter and returns 
+  true if it is a match or a string.  When it is a string, 
+  it will only match exact file names ignoring case.  "
+  [start-path & {:keys [file-filter recursive]}]
+  (let [filter-fn (make-filter-fn file-filter)]
     (if recursive
       (filter filter-fn (file-seq (as-file start-path)))  
       (filter filter-fn (.listFiles (as-file start-path))))))

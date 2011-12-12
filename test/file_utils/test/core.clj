@@ -73,21 +73,25 @@
 (testing "File search"
    (testing "with regex"
      (testing "recursively"
-        (let [files (find-file "." :file-pattern #".*\.clj" :recursive true)]
+        (let [files (find-file "." :file-filter #".*\.clj" :recursive true)]
            (is (> (count files) 0))
            (is (= () (filter (fn [f] (not= "clj" (extension f))) files)))))          
      (testing "not recursively"
-        (let [files (find-file "." :file-pattern #".*\.clj" :recursive false)]
+        (let [files (find-file "." :file-filter #".*\.clj" :recursive false)]
            ; only the project.clj is expected. 
            (is (= (count files) 1))    
            (is (= "project.clj" (filename (first files)))))))
   (testing "with string"
     (testing "recursively"
-      (let [files (find-file "." :file-pattern "core.clj" :recursive true)]
+      (let [files (find-file "." :file-filter "core.clj" :recursive true)]
         (is (= (count files) 2)
         (is (= (filename (first files)) "core.clj")))))
     (testing "not recusively"
-      (let [files (find-file "." :file-pattern "core.clj" :recursive false)]
-        (is (= (count files) 0))))))
-
+      (let [files (find-file "." :file-filter "core.clj" :recursive false)]
+        (is (= (count files) 0)))))
+  (testing "with IFn"
+    (testing "recursively"
+      (let [files (find-file "." :file-filter #(= "clj" (extension %)) :recursive true)]
+         (is (> (count files) 0))
+         (is (= () (filter (fn [f] (not= "clj" (extension f))) files)))))))
 
