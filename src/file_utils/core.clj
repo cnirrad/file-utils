@@ -2,8 +2,7 @@
   (:import java.io.File
            (java.security NoSuchAlgorithmException MessageDigest))
   (:use [clojure.java.io])
-  (:require [clj-time.coerce :as dt]
-            [clojure.walk :as walk]))
+  (:require [clj-time.coerce :as dt]))
   
 (def file-sep (System/getProperty "file.separator"))
 
@@ -131,10 +130,8 @@
 
 (defn rm
   "Deletes the file or directory."
-  [path & recursively]
-  (if (or recursively false)
-    (walk/prewalk #(println (str "rm " %)) (file-seq (as-file path)))
-    (.delete (as-file path))))
+  [path]
+  (.delete (as-file path)))
 
 (defn rm-r
   "Recursively removes a directory and all of its contents."
