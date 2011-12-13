@@ -95,3 +95,8 @@
          (is (> (count files) 0))
          (is (= () (filter (fn [f] (not= "clj" (extension f))) files)))))))
 
+(deftest test-file-str
+  (is (exists? (file-str "." "src" "file_utils" "core.clj")))
+  (is (exists? (file-str ".\\src" "file_utils")))
+  (is (exists? (file-str "." "/project.clj"))))
+

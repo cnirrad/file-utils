@@ -150,5 +150,39 @@
 
   For other arg types, see clojure.java.io/copy"
   [#^String input #^String output]
-  (copy (input-stream input) (output-stream output)))
+  (copy (as-file input) (as-file output)))
+
+(defn move-file
+  "Copies the source to the destination and then removes 
+  the source."
+  [source destination]
+  (do
+    (copy (as-file source) (as-file destination))  
+    (rm source)))
+
+(defn #^File file-str
+  "Concatenates args as strings and returns a java.io.File.  Replaces
+  all / and \\ with File/separatorChar.  Replaces ~ at the start of
+  the path with the user.home system property.
+  
+  This is modified from clojure.contrib.duck-streams."
+  [& args]
+  (let [#^String s (apply str (interpose File/separator args))
+        s (.replaceAll (re-matcher #"(//)|(\\)" s) File/separator)
+        s (if (.startsWith s "~")
+            (str (System/getProperty "user.home")
+                 File/separator (subs s 1))
+            s)]
+    (File. s)))
+
+(defn copy-dir
+  "Copies the source directory and its contents to the destination"
+  [source destination] 
+  (let [f (as-file source)]
+    (if (dir? f)
+      (do
+        (mkdir destination)
+        (doseq [child (list-files f)]
+           (copy-dir child (file-str destination (filename child)))))
+      (copy-file f destination))))
 
