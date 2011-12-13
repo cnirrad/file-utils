@@ -144,3 +144,11 @@
         (rm f))
       (rm f))))
 
+(defn copy-file 
+  "Copies input to output. Both args must be a String that
+  represents the paths. 
+
+  For other arg types, see clojure.java.io/copy"
+  [#^String input #^String output]
+  (copy (input-stream input) (output-stream output)))
+
