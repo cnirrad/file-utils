@@ -3,5 +3,7 @@
   :url "https://github.com/cnirrad/file-utils"
   
   :dependencies [[org.clojure/clojure "1.2.1"]
-                 [clj-time "0.3.3"]])
+                 [clj-time "0.3.3"]]
+            
+  :dev-dependencies [[lein-clojars "0.6.0"]])
 
