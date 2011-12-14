@@ -137,11 +137,9 @@
   "Recursively removes a directory and all of its contents."
   [path]
   (let [f (as-file path)]
-    (if (dir? f)
-      (do 
-        (doseq [child (list-files f)]
-          (rm-r child))
-        (rm f))
+    (when (dir? f)
+      (doseq [child (list-files f)]
+                (rm-r child))
       (rm f))))
 
 (defn copy-file 
