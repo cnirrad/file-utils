@@ -69,6 +69,9 @@
   (is (= "txt" (extension "/home/joe/Documents/test.txt")))
   (is (= nil (extension "/etc/passwd"))))
 
+(deftest test-base-filename
+  (is (= "test" (base-filename "/home/joe/Documents/test.txt")))
+  (is (= "test" (base-filename "/home/joe/Documents/test"))))
 
 (testing "File search"
    (testing "with regex"

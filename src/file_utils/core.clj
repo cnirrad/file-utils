@@ -105,6 +105,13 @@
       (.substring filename (+ idx 1))  
       nil)))
 
+(defn base-filename
+  "Returns the name of the file without the extension."
+  [path]
+  (let [fname (filename path)
+        ext (extension path)]
+    (.substring fname 0 (- (count fname) (count ext) (if ext 1 0)))))
+
 (defn- make-filter-fn [pattern]
   (if (= nil pattern)
     (fn [_] true)
