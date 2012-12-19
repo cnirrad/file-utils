@@ -191,3 +191,19 @@
            (copy-dir child (file-str destination (filename child)))))
       (copy-file f destination))))
 
+(defn compile-glob 
+  "Compiles a Pattern from a glob string."
+	[pattern is-dos]
+		(loop [ptrn (seq pattern)
+			   regex ""
+			   grp false]
+		    (let [c (first ptrn)]
+				(cond
+					(= c \\) (recur (next ptrn) (str regex "\\") grp)
+					(= c \/) (recur (next ptrn) (if is-dos (str regex "\\\\") (str regex "/")) grp)
+					(= c \?) (recur (next ptrn) (if is-dos (str regex "[^\\\\]") (str regex "[^/]")) grp)
+					(= c \*) (if (= (first (next ptrn)) \*) 
+								(recur (nnext ptrn) (str regex ".*") grp) ; double astrick spans mutliple directories
+								(recur (next ptrn) (if is-dos (str regex "[^\\\\]*") (str regex "[^/]*")) grp)) ; single astrick confined to single directory
+					(nil? c) (re-pattern (str regex "$"))
+					:else (recur (next ptrn) (str regex c) grp)))))
